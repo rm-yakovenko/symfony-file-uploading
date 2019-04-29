@@ -25,7 +25,9 @@ class FileUpload
         $webPath = implode('/', $webPath);
 
         $fsPath = $this->fsRoot . $webPath;
-        mkdir(dirname($fsPath), 0777, true);
+        if (!is_dir($directory = dirname($fsPath)) && !mkdir($directory, 0777, true)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $directory));
+        }
         $file->move(dirname($fsPath), basename($fsPath));
 
         return $webPath;
